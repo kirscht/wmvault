@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-export k8ctl='/usr/local/bin/kubectl --namespace=consul-lab'
+#export k8ctl="/usr/local/bin/kubectl --namespace=${NameSpace}"
+export k8ctl="/usr/local/bin/kubectl "
 
 function LOCALIP(){
 
@@ -9,7 +10,11 @@ function LOCALIP(){
 
 }
 
+function OLDESTPODIP(){
 
+    kubectl get pods --sort-by=.metadata.creationTimestamp -o wide | egrep 'Running' | awk '{print $6}' | egrep -v 'IP' | head -1
+
+}
 function GETSERVER(){
 
     trap "ECHO ''" ERR
@@ -51,6 +56,6 @@ function RUNONPOD(){
 function SORTEDPODLIST(){
 
     trap "ECHO ''" ERR
-    ${k8ctl} get pods -o wide | egrep '^consul' | egrep 'Running' | awk '{print $1 ":" $6}' - | sort -t ':' -k 2
+    ${k8ctl} get pods -o wide | egrep "^${Deployment}" | egrep 'Running' | awk '{print $1 ":" $6}' - | sort -t ':' -k 2
 
 }
