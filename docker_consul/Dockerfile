@@ -19,14 +19,16 @@ FROM consul:1.2.2
 #  chmod +x /usr/local/bin/vault && \
 #  vault -h && vault status
 
+RUN echo "consul:1.2.2" > /IMAGE
 ENV CONSUL_BIND_INTERFACE=eth0
 
-RUN apk update && apk upgrade && apk add bash
+RUN apk update && apk upgrade && apk add bash expect
 
 #RUN mkdir /usr/local/etc
 
 #COPY build_secret.sh .
-ADD usr/ /usr/
+#ADD ../usr /usr/
+ADD usr /usr/
 #COPY usr/local/etc/vault.cfg /usr/local/etc/vault.cfg
 
 #COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh

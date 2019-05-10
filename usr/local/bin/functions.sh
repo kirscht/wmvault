@@ -2,6 +2,19 @@
 
 #export k8ctl="/usr/local/bin/kubectl --namespace=${NameSpace}"
 export k8ctl="/usr/local/bin/kubectl "
+#export VaultLog="~/nfs/vault_init.log"
+
+function ISCONSUL(){
+
+    egrep '^consul' /IMAGE
+
+}
+
+function ISVAULT(){
+
+    egrep '^vault' /IMAGE
+
+}
 
 function LOCALIP(){
 
@@ -57,5 +70,17 @@ function SORTEDPODLIST(){
 
     trap "ECHO ''" ERR
     ${k8ctl} get pods -o wide | egrep "^${Deployment}" | egrep 'Running' | awk '{print $1 ":" $6}' - | sort -t ':' -k 2
+
+}
+
+function UNSEALKEY(){
+
+    egrep "Unseal Key ${1:-1}" ${VaultLog:=/var/log/vault/vault_init.log} | awk -F ':' '{print $2}'
+
+}
+
+function ROOTTOKEN(){
+
+    egrep "Initial Root Token" ${VaultLog:=/var/log/vault/vault_init.log} | awk -F ':' '{print $2}' | sed 's/[ ]//g'
 
 }
